@@ -15,12 +15,12 @@ steps:
 - checkout: self
   fetchDepth: 0
 
-- task: NodeTool@0
+- task: UseNode@1
   inputs:
-    versionSpec: '$(NODE_VERSION)'
-  displayName: 'Use Node.js $(NODE_VERSION)'
+    version: '$(NODE_VERSION)'
+  displayName: 'Use Node.js'
 
-- task: SonarCloudPrepare@3
+- task: SonarCloudPrepare@4
   inputs:
     SonarCloud: '$(SONAR_SERVICE_CONNECTION)'
     organization: '$(SONAR_ORGANIZATION)'
@@ -33,7 +33,6 @@ steps:
       sonar.tests=tests
       sonar.javascript.lcov.reportPaths=coverage/lcov.info
       sonar.exclusions=**/node_modules/**,coverage/**,package-lock.json,README.md
-  displayName: 'Prepare SonarQube Cloud analysis'
 
 - script: npm ci
   displayName: 'Install dependencies'
@@ -42,12 +41,12 @@ steps:
   displayName: 'Check Node.js syntax'
 
 - script: npm test
-  displayName: 'Run tests with coverage'
+  displayName: 'Run tests'
 
-- task: SonarCloudAnalyze@3
+- task: SonarCloudAnalyze@4
   displayName: 'Run Code Analysis'
 
-- task: SonarCloudPublish@3
+- task: SonarCloudPublish@4
   inputs:
     pollingTimeoutSec: '300'
   displayName: 'Publish Quality Gate Result'
