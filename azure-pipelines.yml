@@ -34,7 +34,7 @@ steps:
       sonar.javascript.lcov.reportPaths=coverage/lcov.info
       sonar.exclusions=**/node_modules/**,coverage/**,package-lock.json,README.md
 
-- script: npm ci
+- script: npm install
   displayName: 'Install dependencies'
 
 - script: npm run check
