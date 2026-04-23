@@ -4,25 +4,40 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+  NODE_VERSION: '20.x'
+  SONAR_SERVICE_CONNECTION: 'SonarCloud'
+  SONAR_ORGANIZATION: 'pucpr-estudantes'
+  SONAR_PROJECT_KEY: 'pucpr-estudantes_BES_2026_1SEM_7A_EQ02'
+  SONAR_PROJECT_NAME: 'BES_2026_1SEM_7A_EQ02'
+
 steps:
 - checkout: self
   fetchDepth: 0
 
+- task: NodeTool@0
+  inputs:
+    versionSpec: '$(NODE_VERSION)'
+  displayName: 'Use Node.js $(NODE_VERSION)'
+
 - task: SonarCloudPrepare@3
   inputs:
-    SonarCloud: 'SonarCloud'
-    organization: 'pucpr-estudantes-turma-A-grupo-4'
+    SonarCloud: '$(SONAR_SERVICE_CONNECTION)'
+    organization: '$(SONAR_ORGANIZATION)'
     scannerMode: 'cli'
     configMode: 'manual'
-    cliProjectKey: 'pucpr-estudantes_BES_2026_1SEM_7A_EQ02'
-    cliProjectName: 'BES_2026_1SEM_7A_EQ02'
+    cliProjectKey: '$(SONAR_PROJECT_KEY)'
+    cliProjectName: '$(SONAR_PROJECT_NAME)'
     extraProperties: |
-      sonar.sources=.
-      sonar.exclusions=azure-pipelines.yml,README.md
+      sonar.sources=public,server.js
+      sonar.exclusions=**/node_modules/**,package-lock.json,README.md
+  displayName: 'Prepare SonarQube Cloud analysis'
 
-- script: |
-    echo "Projeto estático HTML/CSS/JS - sem etapa de build"
-  displayName: 'Validate project'
+- script: npm ci
+  displayName: 'Install dependencies'
+
+- script: npm run check
+  displayName: 'Check Node.js syntax'
 
 - task: SonarCloudAnalyze@3
   displayName: 'Run Code Analysis'

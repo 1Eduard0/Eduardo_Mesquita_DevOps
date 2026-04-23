@@ -1,34 +1,49 @@
-# ShopMax
+# ShopMax em Node.js
 
-Projeto de interface web de marketplace inspirado em grandes e-commerces, desenvolvido com **HTML**, **CSS** e **JavaScript**.
-
-## Sobre o projeto
-
-O **ShopMax** simula a interface de uma loja virtual moderna, com foco em visual profissional e interações básicas no front-end.
-
-O projeto possui:
-
-- barra superior com logo, busca e navegação
-- área de saldo do usuário
-- campo para adicionar saldo
-- banner principal
-- seção de categorias
-- vitrine de produtos
-- compra simulada com desconto do saldo
-- contador de carrinho
-- notificações visuais de sucesso e erro
-
-## Tecnologias utilizadas
-
-- HTML5
-- CSS3
-- JavaScript
+Projeto de marketplace adaptado para **Node.js**, mantendo a interface original em **HTML**, **CSS** e **JavaScript** e adicionando um servidor HTTP para execução local e futura evolução do sistema.
 
 ## Estrutura do projeto
 
 ```bash
-shopmax/
+shopmax-node/
 │
-├── index.html
-├── style.css
-└── script.js
+├── azure-pipelines.yml
+├── package.json
+├── package-lock.json
+├── server.js
+├── .gitignore
+└── public/
+    ├── index.html
+    ├── style.css
+    └── script.js
+```
+
+## Pré-requisitos
+
+- Node.js 20 ou superior
+- npm
+
+## Como executar
+
+```bash
+npm install
+npm start
+```
+
+Depois, acesse:
+
+```bash
+http://localhost:3000
+```
+
+## Scripts disponíveis
+
+- `npm start`: inicia o servidor
+- `npm run dev`: inicia o servidor em modo watch
+- `npm run check`: valida a sintaxe do arquivo `server.js`
+
+## Observações
+
+- Os arquivos estáticos ficam dentro da pasta `public`
+- O servidor foi implementado com módulos nativos do Node.js, sem dependências externas
+- O pipeline foi ajustado para rodar com Node.js e análise no SonarQube Cloud
