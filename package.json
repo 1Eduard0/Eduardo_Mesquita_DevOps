@@ -1,18 +1,23 @@
 {
   "name": "shopmax-node",
   "version": "1.0.0",
-  "description": "Projeto ShopMax adaptado para Node.js com servidor HTTP nativo.",
+  "description": "Projeto ShopMax em Node.js com testes automatizados",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
-    "check": "node --check server.js"
+    "check": "node --check server.js && node --check public/script.js",
+    "test": "jest --coverage"
   },
   "keywords": [
     "node",
-    "marketplace",
-    "frontend"
+    "shopmax",
+    "sonarcloud",
+    "jest"
   ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
 }
