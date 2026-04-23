@@ -1,0 +1,33 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- checkout: self
+  fetchDepth: 0
+
+- task: SonarCloudPrepare@3
+  inputs:
+    SonarCloud: 'SonarQubeCloud'
+    scannerMode: 'cli'
+    configMode: 'manual'
+    cliProjectKey: 'pucpr-estudantes_BES_2026_1SEM_7A_EQ02'
+    cliProjectName: 'BES_2026_1SEM_7A_EQ02'
+    extraProperties: |
+      sonar.sources=.
+      sonar.exclusions=**/node_modules/**,**/dist/**,**/build/**
+
+- script: |
+    npm ci
+    npm run build
+  displayName: 'Build'
+
+- task: SonarCloudAnalyze@3
+  displayName: 'Run Code Analysis'
+
+- task: SonarCloudPublish@3
+  inputs:
+    pollingTimeoutSec: '300'
+  displayName: 'Publish Quality Gate Result'
