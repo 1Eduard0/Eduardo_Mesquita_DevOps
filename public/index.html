@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopMax</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo">Shop<span>Max</span></div>
+
+    <form class="search-box">
+      <input type="text" placeholder="Pesquisar produtos, marcas e muito mais..." />
+      <button type="submit">Buscar</button>
+    </form>
+
+    <div class="wallet-area">
+      <div class="balance-card">
+        <span class="balance-label">Seu saldo</span>
+        <strong id="balance">R$ 0,00</strong>
+      </div>
+
+      <div class="add-balance-box">
+        <input type="number" id="amountInput" placeholder="Valor" min="1" step="0.01" />
+        <button id="addBalanceBtn" type="button">Adicionar saldo</button>
+      </div>
+    </div>
+
+    <nav class="top-links">
+      <a href="#">Entrar</a>
+      <a href="#">Pedidos</a>
+      <a href="#">Carrinho <span id="cartCount">0</span></a>
+    </nav>
+  </header>
+
+  <div id="toast" class="toast"></div>
+
+  <section class="hero">
+    <div class="hero-text">
+      <h1>As melhores ofertas em um só lugar</h1>
+      <p>Eletrônicos, moda, casa, games e muito mais com preços incríveis.</p>
+      <a href="#products" class="btn-primary">Comprar agora</a>
+    </div>
+  </section>
+
+  <section class="categories">
+    <h2>Categorias</h2>
+    <div class="category-grid">
+      <div class="category-card">Eletrônicos</div>
+      <div class="category-card">Moda</div>
+      <div class="category-card">Casa</div>
+      <div class="category-card">Games</div>
+      <div class="category-card">Celulares</div>
+      <div class="category-card">Livros</div>
+    </div>
+  </section>
+
+  <section class="products" id="products">
+    <h2>Produtos em destaque</h2>
+    <div class="product-grid">
+      <div class="product-card">
+        <img src="https://via.placeholder.com/220x180" alt="Notebook Gamer" />
+        <h3>Notebook Gamer</h3>
+        <p class="price" data-price="4999.90">R$ 4.999,90</p>
+        <button class="buy-btn" data-name="Notebook Gamer" data-price="4999.90">Comprar</button>
+      </div>
+
+      <div class="product-card">
+        <img src="https://via.placeholder.com/220x180" alt="Smartphone Pro" />
+        <h3>Smartphone Pro</h3>
+        <p class="price" data-price="2799.90">R$ 2.799,90</p>
+        <button class="buy-btn" data-name="Smartphone Pro" data-price="2799.90">Comprar</button>
+      </div>
+
+      <div class="product-card">
+        <img src="https://via.placeholder.com/220x180" alt="Headset RGB" />
+        <h3>Headset RGB</h3>
+        <p class="price" data-price="299.90">R$ 299,90</p>
+        <button class="buy-btn" data-name="Headset RGB" data-price="299.90">Comprar</button>
+      </div>
+
+      <div class="product-card">
+        <img src="https://via.placeholder.com/220x180" alt="Cadeira Gamer" />
+        <h3>Cadeira Gamer</h3>
+        <p class="price" data-price="899.90">R$ 899,90</p>
+        <button class="buy-btn" data-name="Cadeira Gamer" data-price="899.90">Comprar</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>© 2026 ShopMax - Todos os direitos reservados.</p>
+  </footer>
+
+  <script src="/script.js"></script>
+</body>
+</html>
