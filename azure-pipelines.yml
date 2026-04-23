@@ -18,12 +18,11 @@ steps:
     cliProjectName: 'BES_2026_1SEM_7A_EQ02'
     extraProperties: |
       sonar.sources=.
-      sonar.exclusions=**/node_modules/**,**/dist/**,**/build/**
+      sonar.exclusions=azure-pipelines.yml,README.md
 
 - script: |
-    npm ci
-    npm run build
-  displayName: 'Build'
+    echo "Projeto estático HTML/CSS/JS - sem etapa de build"
+  displayName: 'Validate project'
 
 - task: SonarCloudAnalyze@3
   displayName: 'Run Code Analysis'
