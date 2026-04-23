@@ -1,17 +1,17 @@
-const balanceElement = document.getElementById("balance");
-const amountInput = document.getElementById("amountInput");
-const addBalanceBtn = document.getElementById("addBalanceBtn");
-const buyButtons = document.querySelectorAll(".buy-btn");
-const cartCountElement = document.getElementById("cartCount");
-const toast = document.getElementById("toast");
+const balanceElement = document.getElementById('balance');
+const amountInput = document.getElementById('amountInput');
+const addBalanceBtn = document.getElementById('addBalanceBtn');
+const buyButtons = document.querySelectorAll('.buy-btn');
+const cartCountElement = document.getElementById('cartCount');
+const toast = document.getElementById('toast');
 
 let balance = 0;
 let cartCount = 0;
 
 function formatCurrency(value) {
-  return value.toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL"
+  return Number(value).toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
   });
 }
 
@@ -23,65 +23,58 @@ function updateCartUI() {
   cartCountElement.textContent = cartCount;
 }
 
-function showToast(message, type = "info") {
+function showToast(message, type = 'info') {
   toast.textContent = message;
   toast.className = `toast show ${type}`;
 
   clearTimeout(toast._timeout);
   toast._timeout = setTimeout(() => {
-    toast.className = "toast";
+    toast.className = 'toast';
   }, 2500);
 }
 
 function addBalance() {
-  const value = parseFloat(amountInput.value);
+  const value = Number(amountInput.value);
 
-  if (isNaN(value) || value <= 0) {
-    showToast("Digite um valor válido para adicionar saldo.", "error");
+  if (!Number.isFinite(value) || value <= 0) {
+    showToast('Digite um valor válido para adicionar saldo.', 'error');
     return;
   }
 
   balance += value;
   updateBalanceUI();
-  amountInput.value = "";
-
-  showToast(`Saldo adicionado com sucesso: ${formatCurrency(value)}`, "success");
+  amountInput.value = '';
+  showToast(`Saldo adicionado com sucesso: ${formatCurrency(value)}`, 'success');
 }
 
 function buyProduct(productName, productPrice) {
-  if (balance >= productPrice) {
-    balance -= productPrice;
-    cartCount++;
+  const numericPrice = Number(productPrice);
+
+  if (balance >= numericPrice) {
+    balance -= numericPrice;
+    cartCount += 1;
     updateBalanceUI();
     updateCartUI();
-
-    showToast(
-      `${productName} comprado com sucesso por ${formatCurrency(productPrice)}.`,
-      "success"
-    );
-  } else {
-    const missing = productPrice - balance;
-    showToast(
-      `Saldo insuficiente. Faltam ${formatCurrency(missing)} para comprar ${productName}.`,
-      "error"
-    );
+    showToast(`${productName} comprado com sucesso por ${formatCurrency(numericPrice)}.`, 'success');
+    return;
   }
+
+  const missing = numericPrice - balance;
+  showToast(`Saldo insuficiente. Faltam ${formatCurrency(missing)} para comprar ${productName}.`, 'error');
 }
 
-addBalanceBtn.addEventListener("click", addBalance);
+addBalanceBtn.addEventListener('click', addBalance);
 
-amountInput.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") {
+amountInput.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
     event.preventDefault();
     addBalance();
   }
 });
 
 buyButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    const productName = button.dataset.name;
-    const productPrice = parseFloat(button.dataset.price);
-    buyProduct(productName, productPrice);
+  button.addEventListener('click', () => {
+    buyProduct(button.dataset.name, Number(button.dataset.price));
   });
 });
 
