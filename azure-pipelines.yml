@@ -7,7 +7,7 @@ pool:
 variables:
   NODE_VERSION: '20.x'
   SONAR_SERVICE_CONNECTION: 'SonarCloud'
-  SONAR_ORGANIZATION: 'pucpr-estudantes'
+  SONAR_ORGANIZATION: 'pucpr-estudantes-turma-a-grupo-4'
   SONAR_PROJECT_KEY: 'pucpr-estudantes_BES_2026_1SEM_7A_EQ02'
   SONAR_PROJECT_NAME: 'BES_2026_1SEM_7A_EQ02'
 
