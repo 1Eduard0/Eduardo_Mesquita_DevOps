@@ -11,6 +11,7 @@ steps:
 - task: SonarCloudPrepare@3
   inputs:
     SonarCloud: 'SonarCloud'
+    organization: 'pucpr-estudantes-turma-A-grupo-4'
     scannerMode: 'cli'
     configMode: 'manual'
     cliProjectKey: 'pucpr-estudantes_BES_2026_1SEM_7A_EQ02'
