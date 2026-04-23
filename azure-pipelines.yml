@@ -29,8 +29,11 @@ steps:
     cliProjectKey: '$(SONAR_PROJECT_KEY)'
     cliProjectName: '$(SONAR_PROJECT_NAME)'
     extraProperties: |
-      sonar.sources=public,server.js
-      sonar.exclusions=**/node_modules/**,package-lock.json,README.md
+      sonar.sources=public,server.js,src
+      sonar.tests=tests
+      sonar.test.inclusions=tests/**/*.js
+      sonar.javascript.lcov.reportPaths=coverage/lcov.info
+      sonar.exclusions=**/node_modules/**,dist/**,package-lock.json,README.md,scripts/**
   displayName: 'Prepare SonarQube Cloud analysis'
 
 - script: npm ci
@@ -38,6 +41,9 @@ steps:
 
 - script: npm run check
   displayName: 'Check Node.js syntax'
+
+- script: npm test
+  displayName: 'Run tests'
 
 - task: SonarCloudAnalyze@4
   displayName: 'Run Code Analysis'
