@@ -1,3 +1,8 @@
+# Azure Pipeline - Build CI Completa
+# Pipeline de integração contínua para o projeto Node.js.
+# Executa validação de sintaxe, testes unitários, build, validação do artefato,
+# smoke test HTTP e distribuição simulada por publicação de artefatos.
+
 trigger:
   branches:
     include:
@@ -26,7 +31,7 @@ stages:
   displayName: 'Build CI'
   jobs:
   - job: BuildApplication
-    displayName: 'Build Node.js application'
+    displayName: 'Build, test and package Node.js application'
     steps:
     - checkout: self
       fetchDepth: 0
@@ -41,11 +46,36 @@ stages:
         npm --version
       displayName: 'Display Node and npm versions'
 
-    - script: npm ci
-      displayName: 'Restore dependencies'
+    - script: |
+        node -e "const pkg=require('./package.json'); const total=Object.keys(pkg.dependencies||{}).length + Object.keys(pkg.devDependencies||{}).length; process.exit(total > 0 ? 0 : 1)" \
+          && npm ci --no-audit --no-fund \
+          || echo "Projeto sem dependências externas. Instalação npm ignorada."
+      displayName: 'Restore dependencies when needed'
 
     - script: npm run check
       displayName: 'Validate JavaScript syntax'
+
+    - script: npm run test:unit
+      displayName: 'Run unit tests'
+
+    - script: npm run validate:test-artifacts
+      displayName: 'Validate unit test reports'
+
+    - task: PublishTestResults@2
+      displayName: 'Publish unit test results'
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: 'junit.xml'
+        failTaskOnFailedTests: true
+        testRunTitle: 'ShopMax unit tests'
+
+    - task: PublishCodeCoverageResults@2
+      displayName: 'Publish unit test coverage'
+      condition: succeededOrFailed()
+      inputs:
+        summaryFileLocation: 'coverage/cobertura-coverage.xml'
+        pathToSources: '$(System.DefaultWorkingDirectory)'
 
     - script: npm run build
       displayName: 'Generate build output'
@@ -66,6 +96,8 @@ stages:
         mkdir -p artifact/shopmax
         cp -r dist artifact/shopmax/dist
         cp server.js package.json README.md artifact/shopmax/
+        cp -r coverage artifact/shopmax/coverage
+        cp junit.xml artifact/shopmax/junit.xml
         tar -czf shopmax-build-$(Build.BuildId).tar.gz -C artifact shopmax
         ls -lh shopmax-build-$(Build.BuildId).tar.gz
       displayName: 'Package build artifact'
@@ -82,4 +114,11 @@ stages:
       inputs:
         PathtoPublish: 'dist'
         ArtifactName: 'shopmax-dist'
+        publishLocation: 'Container'
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish test and coverage reports'
+      inputs:
+        PathtoPublish: 'coverage'
+        ArtifactName: 'shopmax-coverage'
         publishLocation: 'Container'

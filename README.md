@@ -46,3 +46,20 @@ http://localhost:3000
 - `scripts/run-tests.js`: executor de testes e geração de relatórios
 - `scripts/validate-dist.js`: validação do artefato gerado
 - `scripts/smoke-test.js`: smoke test HTTP da aplicação
+
+## Pipeline Build CI completa
+
+A pipeline `azure-pipelines-build-ci.yml` realiza integração contínua com foco em build da aplicação. Ela executa validação de sintaxe, testes unitários, publicação dos resultados de teste, geração do build, validação da pasta `dist`, smoke test HTTP sobre o artefato gerado e publicação dos artefatos finais no Azure DevOps.
+
+Fluxo principal:
+
+1. configura Node.js;
+2. restaura dependências somente quando existirem dependências externas;
+3. executa `npm run check`;
+4. executa `npm run test:unit`;
+5. valida relatórios JUnit e Cobertura;
+6. executa `npm run build`;
+7. valida a pasta `dist`;
+8. sobe o servidor usando `PUBLIC_DIR=dist`;
+9. executa smoke test HTTP;
+10. empacota e publica os artefatos da aplicação.

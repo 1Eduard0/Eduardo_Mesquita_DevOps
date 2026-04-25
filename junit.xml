@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="shopmax-tests" tests="10" failures="0" time="0">
+    <testcase classname="shopmax" name="formatCurrency deve formatar valor inteiro em real" time="0.111"></testcase>
+    <testcase classname="shopmax" name="formatCurrency deve formatar valor decimal em real" time="0.000"></testcase>
+    <testcase classname="shopmax" name="addBalance deve somar saldo com valor válido" time="0.000"></testcase>
+    <testcase classname="shopmax" name="addBalance deve aceitar valor numérico em formato texto" time="0.000"></testcase>
+    <testcase classname="shopmax" name="addBalance deve rejeitar valor zero" time="0.000"></testcase>
+    <testcase classname="shopmax" name="addBalance deve rejeitar valor não numérico" time="0.000"></testcase>
+    <testcase classname="shopmax" name="buyProduct deve realizar compra com saldo suficiente" time="0.001"></testcase>
+    <testcase classname="shopmax" name="buyProduct deve impedir compra sem saldo suficiente" time="0.000"></testcase>
+    <testcase classname="shopmax" name="buyProduct deve rejeitar preço inválido" time="0.000"></testcase>
+    <testcase classname="shopmax" name="buyProduct deve informar valor faltante quando saldo é insuficiente" time="0.000"></testcase>
+  </testsuite>
+</testsuites>

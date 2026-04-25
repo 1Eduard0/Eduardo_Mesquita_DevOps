@@ -1,7 +1,7 @@
 {
   "name": "shopmax-node",
   "version": "1.0.0",
-  "description": "Projeto ShopMax em Node.js com pipelines de build, testes e análise estática.",
+  "description": "Projeto ShopMax em Node.js com build, testes unitários, smoke test e pipelines CI.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -9,7 +9,9 @@
     "build": "node scripts/build.js",
     "test": "node scripts/run-tests.js",
     "validate:dist": "node scripts/validate-dist.js",
-    "smoke": "node scripts/smoke-test.js"
+    "smoke": "node scripts/smoke-test.js",
+    "test:unit": "node scripts/run-tests.js",
+    "validate:test-artifacts": "node scripts/validate-test-artifacts.js"
   },
   "keywords": [
     "node",
