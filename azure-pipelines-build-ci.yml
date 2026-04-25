@@ -1,8 +1,3 @@
-# Azure Pipeline - Build CI
-# Pipeline focada em integração contínua de build do projeto Node.js.
-# Diferente das outras pipelines, esta não executa SonarCloud nem publica cobertura.
-# O objetivo é validar sintaxe, gerar o build, testar o artefato gerado e publicar o pacote da aplicação.
-
 trigger:
   branches:
     include:
