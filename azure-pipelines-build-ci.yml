@@ -1,8 +1,3 @@
-# Azure Pipeline - Build CI Completa
-# Pipeline de integração contínua para o projeto Node.js.
-# Executa validação de sintaxe, testes unitários, build, validação do artefato,
-# smoke test HTTP e distribuição simulada por publicação de artefatos.
-
 trigger:
   branches:
     include:
