@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const PORT = process.env.PORT || 3000;
-const publicDir = path.join(__dirname, 'public');
+const publicDir = path.resolve(__dirname, process.env.PUBLIC_DIR || 'public');
 
 const contentTypes = {
   '.html': 'text/html; charset=utf-8',
@@ -22,7 +22,15 @@ function resolveFilePath(urlPath) {
     return path.join(publicDir, 'index.html');
   }
 
-  return path.join(publicDir, urlPath);
+  const decodedPath = decodeURIComponent(urlPath);
+  const normalizedPath = path.normalize(decodedPath).replace(/^(\.\.[/\\])+/, '');
+  const filePath = path.join(publicDir, normalizedPath);
+
+  if (!filePath.startsWith(publicDir)) {
+    return path.join(publicDir, 'index.html');
+  }
+
+  return filePath;
 }
 
 function sendFile(filePath, response) {

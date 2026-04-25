@@ -1,0 +1,90 @@
+# Azure Pipeline - Build CI
+# Pipeline focada em integração contínua de build do projeto Node.js.
+# Diferente das outras pipelines, esta não executa SonarCloud nem publica cobertura.
+# O objetivo é validar sintaxe, gerar o build, testar o artefato gerado e publicar o pacote da aplicação.
+
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    exclude:
+      - README.md
+      - docs/**
+      - '*.md'
+
+pr:
+  branches:
+    include:
+      - main
+      - develop
+
+variables:
+  NODE_VERSION: '20.x'
+  BUILD_PORT: '3000'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+- stage: BuildCI
+  displayName: 'Build CI'
+  jobs:
+  - job: BuildApplication
+    displayName: 'Build Node.js application'
+    steps:
+    - checkout: self
+      fetchDepth: 0
+
+    - task: UseNode@1
+      displayName: 'Use Node.js $(NODE_VERSION)'
+      inputs:
+        version: '$(NODE_VERSION)'
+
+    - script: |
+        node --version
+        npm --version
+      displayName: 'Display Node and npm versions'
+
+    - script: npm ci
+      displayName: 'Restore dependencies'
+
+    - script: npm run check
+      displayName: 'Validate JavaScript syntax'
+
+    - script: npm run build
+      displayName: 'Generate build output'
+
+    - script: npm run validate:dist
+      displayName: 'Validate dist output'
+
+    - script: |
+        PUBLIC_DIR=dist PORT=$(BUILD_PORT) node server.js &
+        SERVER_PID=$!
+        echo "Server started with PID $SERVER_PID"
+        sleep 2
+        PORT=$(BUILD_PORT) npm run smoke
+        kill $SERVER_PID
+      displayName: 'Smoke test generated build'
+
+    - script: |
+        mkdir -p artifact/shopmax
+        cp -r dist artifact/shopmax/dist
+        cp server.js package.json README.md artifact/shopmax/
+        tar -czf shopmax-build-$(Build.BuildId).tar.gz -C artifact shopmax
+        ls -lh shopmax-build-$(Build.BuildId).tar.gz
+      displayName: 'Package build artifact'
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish packaged application'
+      inputs:
+        PathtoPublish: 'shopmax-build-$(Build.BuildId).tar.gz'
+        ArtifactName: 'shopmax-build-ci'
+        publishLocation: 'Container'
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish dist folder'
+      inputs:
+        PathtoPublish: 'dist'
+        ArtifactName: 'shopmax-dist'
+        publishLocation: 'Container'
