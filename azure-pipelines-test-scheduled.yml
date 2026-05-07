@@ -2,19 +2,18 @@ trigger: none
 pr: none
 
 schedules:
-# TESTE: executa a cada 3 minutos na quinta-feira, das 18h às 23h no horário de Brasília.
-# Azure usa UTC, então:
-# Quinta 18h-20h59 BRT = Quinta 21h-23h59 UTC
-- cron: '*/3 21-23 * * Thu'
-  displayName: 'Teste agendado - Quinta 18h-20h59 BRT'
+# Produção: executa de 1 em 1 hora toda quinta-feira, das 18h às 23h no horário de Brasília.
+# Quinta 18h-20h BRT = Quinta 21h-23h UTC
+- cron: '0 21-23 * * Thu'
+  displayName: 'Testes agendados - Quinta 18h-20h BRT'
   branches:
     include:
       - main
   always: true
 
-# Quinta 21h-23h59 BRT = Sexta 00h-02h59 UTC
-- cron: '*/3 0-2 * * Fri'
-  displayName: 'Teste agendado - Quinta 21h-23h59 BRT'
+# Quinta 21h-23h BRT = Sexta 00h-02h UTC
+- cron: '0 0-2 * * Fri'
+  displayName: 'Testes agendados - Quinta 21h-23h BRT'
   branches:
     include:
       - main
