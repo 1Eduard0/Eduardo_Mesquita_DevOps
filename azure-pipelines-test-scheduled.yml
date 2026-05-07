@@ -1,0 +1,78 @@
+trigger: none
+pr: none
+
+schedules:
+# TESTE: executa a cada 3 minutos na quinta-feira, das 18h às 23h no horário de Brasília.
+# Azure usa UTC, então:
+# Quinta 18h-20h59 BRT = Quinta 21h-23h59 UTC
+- cron: '*/3 21-23 * * Thu'
+  displayName: 'Teste agendado - Quinta 18h-20h59 BRT'
+  branches:
+    include:
+      - main
+  always: true
+
+# Quinta 21h-23h59 BRT = Sexta 00h-02h59 UTC
+- cron: '*/3 0-2 * * Fri'
+  displayName: 'Teste agendado - Quinta 21h-23h59 BRT'
+  branches:
+    include:
+      - main
+  always: true
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  NODE_VERSION: '20.x'
+
+stages:
+- stage: ScheduledTests
+  displayName: 'Scheduled Tests'
+  jobs:
+  - job: RunTests
+    displayName: 'Run Node.js tests'
+    steps:
+    - checkout: self
+      fetchDepth: 0
+
+    - task: UseNode@1
+      displayName: 'Use Node.js $(NODE_VERSION)'
+      inputs:
+        version: '$(NODE_VERSION)'
+
+    - script: |
+        node --version
+        npm --version
+      displayName: 'Display Node and npm versions'
+
+    - script: |
+        node -e "const pkg=require('./package.json'); const total=Object.keys(pkg.dependencies||{}).length + Object.keys(pkg.devDependencies||{}).length; process.exit(total > 0 ? 0 : 1)" \
+          && npm ci --no-audit --no-fund \
+          || echo "Projeto sem dependências externas. Instalação npm ignorada."
+      displayName: 'Restore dependencies when needed'
+
+    - script: npm run check
+      displayName: 'Validate JavaScript syntax'
+
+    - script: npm run test:unit
+      displayName: 'Run unit tests'
+
+    - script: npm run validate:test-artifacts
+      displayName: 'Validate test artifacts'
+
+    - task: PublishTestResults@2
+      displayName: 'Publish unit test results'
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: 'junit.xml'
+        failTaskOnFailedTests: true
+        testRunTitle: 'Scheduled ShopMax unit tests'
+
+    - task: PublishCodeCoverageResults@2
+      displayName: 'Publish code coverage'
+      condition: succeededOrFailed()
+      inputs:
+        summaryFileLocation: 'coverage/cobertura-coverage.xml'
+        pathToSources: '$(System.DefaultWorkingDirectory)'
