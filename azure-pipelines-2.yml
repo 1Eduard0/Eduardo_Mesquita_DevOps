@@ -11,7 +11,8 @@ variables:
 
 steps:
   - checkout: self
-    persistCredentials: true
+    clean: true
+    fetchDepth: 0
 
   - script: |
       echo "Configurando usuário Git..."
@@ -20,8 +21,8 @@ steps:
 
       echo "Adicionando remote do GitHub..."
       git remote remove github || true
-      git remote add github https://$(GITHUB_TOKEN)@github.com/iYoNuttxD/daniel-musse-devops.git
+      git remote add github https://x-access-token:$(GITHUB_TOKEN)@github.com/iYoNuttxD/daniel-musse-devops.git
 
       echo "Enviando código para o GitHub..."
-      git push github HEAD:main --force
+      git push --no-thin github HEAD:main --force
     displayName: "Sincronizar repositório Azure DevOps com GitHub"
