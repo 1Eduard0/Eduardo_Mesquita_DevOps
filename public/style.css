@@ -280,6 +280,13 @@ body {
   margin-top: 30px;
 }
 
+.deploy-status {
+  color: #ffd814;
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
 .toast {
   position: fixed;
   top: 20px;
