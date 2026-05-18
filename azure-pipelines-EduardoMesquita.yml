@@ -15,14 +15,36 @@ steps:
     fetchDepth: 0
 
   - script: |
-      echo "Configurando usuário Git..."
+      set -e
+
+      echo "Preparando diretórios..."
+      AZURE_REPO="$(pwd)"
+      GITHUB_REPO="/tmp/github-repo"
+
+      echo "Clonando repositório do GitHub fora da pasta do Azure..."
+      rm -rf "$GITHUB_REPO"
+      git clone https://x-access-token:$(GITHUB_TOKEN_Eduardo_Mesquita)@github.com/1Eduard0/Eduardo_Mesquita_DevOps.git "$GITHUB_REPO"
+
+      echo "Sincronizando arquivos do Azure para o GitHub, preservando .github..."
+      rsync -av --delete \
+        --exclude='.git' \
+        --exclude='.github' \
+        "$AZURE_REPO"/ "$GITHUB_REPO"/
+
+      cd "$GITHUB_REPO"
+
+      echo "Configurando usuário Git no repositório clonado..."
       git config user.name "Azure DevOps Pipeline"
       git config user.email "pipeline@azuredevops.local"
 
-      echo "Adicionando remote do GitHub..."
-      git remote remove github || true
-      git remote add github https://x-access-token:$(GITHUB_TOKEN_Eduardo_Mesquita)@github.com/1Eduard0/Eduardo_Mesquita_DevOps.git
+      echo "Verificando alterações..."
+      git status
 
-      echo "Enviando código para o GitHub..."
-      git push --no-thin github HEAD:main --force
-    displayName: "Sincronizar repositório Azure DevOps com GitHub"
+      if [ -n "$(git status --porcelain)" ]; then
+        git add .
+        git commit -m "Sync from Azure DevOps"
+        git push origin main
+      else
+        echo "Nenhuma alteração para sincronizar."
+      fi
+    displayName: "Sincronizar Azure DevOps com GitHub preservando .github"
