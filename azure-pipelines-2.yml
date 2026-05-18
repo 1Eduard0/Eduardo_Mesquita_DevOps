@@ -15,14 +15,32 @@ steps:
     fetchDepth: 0
 
   - script: |
+      set -e
+
       echo "Configurando usuário Git..."
       git config user.name "Azure DevOps Pipeline"
       git config user.email "pipeline@azuredevops.local"
 
-      echo "Adicionando remote do GitHub..."
-      git remote remove github || true
-      git remote add github https://x-access-token:$(GITHUB_TOKEN)@github.com/iYoNuttxD/daniel-musse-devops.git
+      echo "Clonando repositório do GitHub..."
+      git clone https://x-access-token:$(GITHUB_TOKEN)@github.com/iYoNuttxD/daniel-musse-devops.git github-repo
 
-      echo "Enviando código para o GitHub..."
-      git push --no-thin github HEAD:main --force
-    displayName: "Sincronizar repositório Azure DevOps com GitHub"
+      echo "Sincronizando arquivos do Azure para o GitHub, preservando arquivos protegidos..."
+      rsync -av --delete \
+        --exclude='.git' \
+        --exclude='.github' \
+        --exclude='README.md' \
+        ./ github-repo/
+
+      cd github-repo
+
+      echo "Verificando alterações..."
+      git status
+
+      if [ -n "$(git status --porcelain)" ]; then
+        git add .
+        git commit -m "Sync from Azure DevOps"
+        git push origin main
+      else
+        echo "Nenhuma alteração para sincronizar."
+      fi
+    displayName: "Sincronizar Azure DevOps com GitHub preservando arquivos protegidos"
