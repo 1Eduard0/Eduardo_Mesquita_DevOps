@@ -1,0 +1,28 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - group: github-pages-sync
+
+steps:
+  - checkout: self
+    clean: true
+    fetchDepth: 0
+
+  - script: |
+      echo "Configurando usuário Git..."
+      git config user.name "Azure DevOps Pipeline"
+      git config user.email "pipeline@azuredevops.local"
+
+      echo "Adicionando remote do GitHub..."
+      git remote remove github || true
+      git remote add github https://x-access-token:$(GITHUB_TOKEN_Eduardo_Mesquita)@github.com/1Eduard0/Eduardo_Mesquita_DevOps.git
+
+      echo "Enviando código para o GitHub..."
+      git push --no-thin github HEAD:main --force
+    displayName: "Sincronizar repositório Azure DevOps com GitHub"
