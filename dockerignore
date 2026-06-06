@@ -1,0 +1,8 @@
+.git
+.github
+node_modules
+coverage
+junit.xml
+*.log
+README.md
+azure-pipelines*.yml
